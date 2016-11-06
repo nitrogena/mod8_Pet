@@ -65,6 +65,7 @@ class NuevoRViewController: UIViewController, UITextFieldDelegate, UIPickerViewD
             return colonias!.count
         }
     }
+   
     
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?{
         if pickerEstados.isEqual(pickerView){
@@ -77,6 +78,39 @@ class NuevoRViewController: UIViewController, UITextFieldDelegate, UIPickerViewD
         else {
             return colonias![row] as! String        }
     }
+    
+    
+    
+    //PARA PASAR LOS DATOS
+    
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int){
+        if pickerView.isEqual(self.pickerEstados){
+            
+            //EL PICKER TIENE SOLO UN COMPONENTE
+            //return (estados![row].valueForKey("nombreEstado") as! String)
+            //caja igual a algo
+            self.txtEdo.text = (estados![row].valueForKey("nombreEstado") as! String)
+            let codigoEstado = (estados![row].valueForKey("c_estado") as! String)
+            
+            print(codigoEstado)
+            
+            SOAPManager.instance.consultaMuncipios(codigoEstado)
+        }/*
+        else if pickerView.isEqual(self.pickerMuns){
+            self.txtMunicipio.text = (municipios![row].valueForKey("nombreMun") as! String)
+            let codigoMuns = (municipios![row].valueForKey("c_municipio") as! String)
+            
+            
+            
+        }
+        else {
+            self.txtColonia.text = (colonias![row].valueForKey("nombreCol") as! String)
+            let codigoColonias = (colonias![row].valueForKey("c_municipio") as! String)
+        }*/
+    }
+    /**/
+    
+    
     
     
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool{
@@ -231,7 +265,16 @@ class NuevoRViewController: UIViewController, UITextFieldDelegate, UIPickerViewD
     
     
     func consultaEstados(){
+        
+        if ConnectionManager.hayConexion(){
+            if !ConnectionManager.esConexionWiFi(){
+                //Preguntar al usuario si quiere descargar el contenido
+            }
+        
         let urlString = "http://edg3.mx/webservicessepomex/WMRegresaEstados.php"
+            
+            //edg3.mx/webservicessepomex/sepomex.asmx
+            
         let laURL = NSURL(string: urlString)!
         let elRequest = NSURLRequest(URL: laURL)
         self.datosRecibidos = NSMutableData(capacity: 0)
@@ -240,6 +283,10 @@ class NuevoRViewController: UIViewController, UITextFieldDelegate, UIPickerViewD
             self.datosRecibidos = nil
             self.conexion = nil
             print("No se puede accesder a los edos")
+        }
+        }
+        else{
+            print ("No hay conexion a internet")
         }
 
     }
